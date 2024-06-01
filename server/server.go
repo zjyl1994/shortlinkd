@@ -13,6 +13,7 @@ func Run(listenAddr string) error {
 	if vars.DEBUG_MODE {
 		debugG := app.Group("/debug")
 		debugG.Get("/list", ListLinkHandler)
+		debugG.Get("/reload", ReloadLinkHandler)
 	}
 	return app.Listen(listenAddr)
 }

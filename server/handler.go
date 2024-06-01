@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/zjyl1994/shortlinkd/infra/vars"
 	"github.com/zjyl1994/shortlinkd/service/code"
 )
 
@@ -25,4 +26,16 @@ func LinkHandler(c *fiber.Ctx) error {
 func ListLinkHandler(c *fiber.Ctx) error {
 	items := code.ListCodes()
 	return c.JSON(items)
+}
+
+func ReloadLinkHandler(c *fiber.Ctx) error {
+	cfg, err := vars.LoadConfig(vars.CONFIG_FILE)
+	if err != nil {
+		return err
+	}
+	err = vars.ApplyConfig(cfg)
+	if err != nil {
+		return err
+	}
+	return c.SendString("OK")
 }

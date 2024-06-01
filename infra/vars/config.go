@@ -3,7 +3,8 @@ package vars
 import "fmt"
 
 type ConfigS struct {
-	List map[string]ListItemS
+	Fallback string
+	List     map[string]ListItemS
 }
 
 type ListItemS struct {

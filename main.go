@@ -2,12 +2,10 @@ package main
 
 import (
 	"flag"
-	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/zjyl1994/shortlinkd/infra/vars"
 	"github.com/zjyl1994/shortlinkd/server"
-	"github.com/zjyl1994/shortlinkd/service/code"
 )
 
 func main() {
@@ -32,33 +30,10 @@ func errMain() error {
 	if err != nil {
 		return err
 	}
-	initCodes(cfg.List)
+	err = vars.ApplyConfig(cfg)
+	if err != nil {
+		return err
+	}
 
 	return server.Run(vars.LISTEN)
-}
-
-func initCodes(items map[string]vars.ListItemS) error {
-	data := make([]code.CodeItem, 0, len(items))
-	for shortCode, item := range items {
-		newItem := code.CodeItem{
-			Code:    shortCode,
-			URL:     item.URL,
-			Enabled: true,
-		}
-
-		if item.Disabled {
-			continue
-		}
-
-		if item.Expired > "" {
-			t, err := time.Parse(time.DateTime, item.Expired)
-			if err != nil {
-				return err
-			}
-			newItem.Expired = &t
-		}
-		data = append(data, newItem)
-	}
-	code.InitCode(data)
-	return nil
 }
