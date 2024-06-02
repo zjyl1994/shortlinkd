@@ -3,8 +3,8 @@ Yet another URL shortener
 
 # Features
 
-[X] 302 Redirect
-[X] Config hot reload
+- [x] 302 Redirect
+- [x] Config hot reload
 
 # Install
 
