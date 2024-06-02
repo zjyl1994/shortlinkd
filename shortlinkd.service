@@ -1,0 +1,13 @@
+[Unit]
+Description=Shortlinkd
+After=network.target
+Wants=network-online.target
+
+[Service]
+Restart=always
+Type=simple
+ExecStart=/usr/local/bin/shortlinkd -listen=127.0.0.1:10086 -config=/etc/shortlinkd.yaml
+ExecReload=/bin/kill -HUP "$MAINPID"
+
+[Install]
+WantedBy=multi-user.target

@@ -19,7 +19,7 @@ func main() {
 }
 
 func errMain() error {
-	flag.StringVar(&vars.LISTEN, "listen", "localhost:9900", "listen address")
+	flag.StringVar(&vars.LISTEN, "listen", "localhost:10086", "listen address")
 	flag.StringVar(&vars.CONFIG_FILE, "config", "config.yaml", "config file")
 	flag.BoolVar(&vars.DEBUG_MODE, "debug", false, "enter debug mode")
 	flag.Parse()
