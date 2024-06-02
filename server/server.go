@@ -1,19 +1,35 @@
 package server
 
 import (
+	"embed"
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
 	"github.com/zjyl1994/shortlinkd/infra/vars"
 )
 
+var App *fiber.App
+
+//go:embed index.html
+var htmlTemplates embed.FS
+
 func Run(listenAddr string) error {
-	app := fiber.New(fiber.Config{
+	engine := html.NewFileSystem(http.FS(htmlTemplates), ".html")
+	App = fiber.New(fiber.Config{
 		DisableStartupMessage: true,
+		Views:                 engine,
 	})
-	app.Get("/:code", LinkHandler)
+	App.Get("/", indexPage)
+	App.Get("/:code", LinkHandler)
 	if vars.DEBUG_MODE {
-		debugG := app.Group("/debug")
+		debugG := App.Group("/debug")
 		debugG.Get("/list", ListLinkHandler)
 		debugG.Get("/reload", ReloadLinkHandler)
 	}
-	return app.Listen(listenAddr)
+	return App.Listen(listenAddr)
+}
+
+func indexPage(c *fiber.Ctx) error {
+	return c.Render("index", fiber.Map{})
 }

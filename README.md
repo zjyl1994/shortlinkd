@@ -1,2 +1,2 @@
 # shortlinkd
- Yet another URL shortener
+Yet another URL shortener

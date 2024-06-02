@@ -2,6 +2,10 @@ package main
 
 import (
 	"flag"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/zjyl1994/shortlinkd/infra/vars"
@@ -34,6 +38,39 @@ func errMain() error {
 	if err != nil {
 		return err
 	}
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		for sig := range sigs {
+			logrus.Infoln("Singal", sig.String(), "received")
+			switch sig {
+			case syscall.SIGHUP:
+				cfg, err := vars.LoadConfig(vars.CONFIG_FILE)
+				if err != nil {
+					logrus.Errorln(err.Error())
+					return
+				}
+				err = vars.ApplyConfig(cfg)
+				if err != nil {
+					logrus.Errorln(err.Error())
+					return
+				}
+			case syscall.SIGINT:
+				err := server.App.ShutdownWithTimeout(5 * time.Second)
+				if err != nil {
+					logrus.Errorln(err.Error())
+					return
+				}
+			case syscall.SIGTERM:
+				err := server.App.Shutdown()
+				if err != nil {
+					logrus.Errorln(err.Error())
+					return
+				}
+			}
+		}
+	}()
 
 	return server.Run(vars.LISTEN)
 }

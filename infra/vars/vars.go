@@ -12,8 +12,6 @@ var (
 	LISTEN      string
 	CONFIG_FILE string
 	DEBUG_MODE  bool
-
-	FallbackPage string
 )
 
 func LoadConfig(configFile string) (*ConfigS, error) {
@@ -32,13 +30,8 @@ func LoadConfig(configFile string) (*ConfigS, error) {
 }
 
 func ApplyConfig(cfg *ConfigS) error {
-	FallbackPage = cfg.Fallback
-	return initCodes(cfg.List)
-}
-
-func initCodes(items map[string]ListItemS) error {
-	data := make([]code.CodeItem, 0, len(items))
-	for shortCode, item := range items {
+	data := make([]code.CodeItem, 0, len(cfg.List))
+	for shortCode, item := range cfg.List {
 		newItem := code.CodeItem{
 			Code:    shortCode,
 			URL:     item.URL,
