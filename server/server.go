@@ -31,5 +31,8 @@ func Run(listenAddr string) error {
 }
 
 func indexPage(c *fiber.Ctx) error {
+	if vars.INDEX_PAGE > "" {
+		return c.Redirect(vars.INDEX_PAGE)
+	}
 	return c.Render("index", fiber.Map{})
 }

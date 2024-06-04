@@ -11,6 +11,7 @@ import (
 var (
 	LISTEN      string
 	CONFIG_FILE string
+	INDEX_PAGE  string
 	DEBUG_MODE  bool
 )
 
@@ -30,6 +31,7 @@ func LoadConfig(configFile string) (*ConfigS, error) {
 }
 
 func ApplyConfig(cfg *ConfigS) error {
+	INDEX_PAGE = cfg.Index
 	data := make([]code.CodeItem, 0, len(cfg.List))
 	for shortCode, item := range cfg.List {
 		newItem := code.CodeItem{
